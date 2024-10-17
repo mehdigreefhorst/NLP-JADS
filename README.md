@@ -14,3 +14,6 @@ to start work - activate the venv and install modules
 - `pip install -r software_install_files/requirements.txt`
 - `python software_install_files/check_installation.py`
 - `source venv/bin/activate` (for mac)
+
+### Upload data
+- Add the news data to the data folder in assignment 2
