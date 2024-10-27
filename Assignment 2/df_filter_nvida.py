@@ -1,4 +1,6 @@
 import re
+import pandas as pd
+import datetime
 
 
 def insert_empty_column_to_df(df, original_column, extension, default_value_column):
@@ -82,3 +84,43 @@ def filter_df_to_nvida(df, related_tickers="NVDA"):
     add_improved_NVDA_ticker_column(df, related_tickers)
     return df[df["ticker_NVDA_improved"] == True]
 
+
+# -------------- Stock functions --------- #
+
+
+def create_opening_closing_dict_stock_data(stock_df):
+    increase_start_closing_time_dict = {}
+    for index, row in stock_df.iterrows():
+        if row["Close"] >= row["Open"]:
+            increase_start_closing_time_dict[row["Date"]] = 1
+        else:
+            increase_start_closing_time_dict[row["Date"]] = 0
+    return increase_start_closing_time_dict
+
+
+def get_nvidia_increased_bool(date_to_find, increase_stock_dict):
+    """
+    checks the date to find in the increase_stock_dict. If the date is missing, it tries to find the nearest previous date where the increase stock date is available
+    :param date_to_find:
+    :param increase_stock_dict:
+    :return:
+    """
+    if date_to_find in increase_stock_dict:
+        return increase_stock_dict[date_to_find]
+    for num in range(1, 10):
+        date_time_object_to_find = datetime.datetime.strptime(date_to_find, "%Y-%m-%d") - datetime.timedelta(num)
+        date_reduction_string = date_time_object_to_find.strftime("%Y-%m-%d")
+        if date_reduction_string in increase_stock_dict:
+            return increase_stock_dict[date_reduction_string]
+
+
+def add_nvidia_increase_decrease_bool_to_df(df_news, df_stock_data):
+    stock_increase_close_dict = create_opening_closing_dict_stock_data(df_stock_data)
+
+    if "NVIDIA_stock_increase" not in df_news:
+        df_news["NVIDIA_stock_increase"] = False
+
+    for index, row in df_news.iterrows():
+        date_article = row["release_date"]
+        nvidia_increased = get_nvidia_increased_bool(date_article, stock_increase_close_dict)
+        df_news.at[index, "NVIDIA_stock_increase"] = nvidia_increased
