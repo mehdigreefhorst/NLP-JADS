@@ -62,10 +62,7 @@ def add_improved_NVDA_ticker_column(df, tickers_to_add="NVDA"):
     for index, row in df.iterrows():
         # if NVDA is ticker but NVDA is not mentioned in the topic or in the content, so must be mistake
         # ticker is not NVDA but NVIDA is mentioned in the topic or in the content
-        if (row['ticker'] != "NVDA") & ((row['title_NVIDIA_topic'] == True) | (row['content_NVIDIA_topic'] == True)):
-            df.at[index, improved_ticker_column] = True
-        #NVIDA is the ticker
-        elif row['ticker'] == tickers_to_add:
+        if row['content_NVIDIA_topic'] == True:
             df.at[index, improved_ticker_column] = True
         else:
             df.at[index, improved_ticker_column] = False
