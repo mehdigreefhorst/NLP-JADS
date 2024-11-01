@@ -121,3 +121,4 @@ def add_nvidia_increase_decrease_bool_to_df(df_news, df_stock_data):
         date_article = row["release_date"]
         nvidia_increased = get_nvidia_increased_bool(date_article, stock_increase_close_dict)
         df_news.at[index, "NVIDIA_stock_increase"] = nvidia_increased
+    return df_news
