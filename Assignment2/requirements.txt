@@ -15,3 +15,6 @@ FuzzyTM==2.0.9
 pyLDAvis
 openai
 python-dotenv
+flair
+pytorch
+torchvision
